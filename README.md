@@ -1,6 +1,11 @@
 # TypeScript CDK WebSocket with REST API and SDK@V3 Layer
 
-A minimal WebSocket example stack.
+A minimal WebSocket example stack.  Resources created:
+
+* API Gateway WebSocket API
+* API Gateway REST API
+* DynamoDB Table
+* Lambdas and lambda layer
 
 ## Lambda Layer
 
