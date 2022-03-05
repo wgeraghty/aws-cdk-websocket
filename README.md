@@ -1,8 +1,40 @@
-# Welcome to your CDK TypeScript project
+# TypeScript CDK WebSocket with REST API and SDK@V3 Layer
 
-This is a blank project for TypeScript development with CDK.
+A minimal WebSocket example stack.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## Lambda Layer
+
+The `lambda-layer/package.zip` file needs to be created before deploying.
+
+Bundled packages controlled by `lambda-layer/nodejs/package.json`
+
+Run `./build.sh` in the `lambda-layer/` folder.
+
+## Source
+
+Main stack in `lib/websocket-stack.ts`
+
+Lambda code in `src/`
+
+## Testing
+
+Chrome Simple WebSocket Client Extension: https://chrome.google.com/webstore/detail/simple-websocket-client/pfdhoblngboilpfeibdedpjgfnlcodoo
+
+Connect to `${WebsocketStack.WebSocketStageUrl}` with a WebSocket client.
+
+Open `${WebSocketStack.BroadcastUri}` in a browser.
+
+You should see `{"foo":"bar"}` in the WebSocket client.
+
+## Lambdas
+
+* `src/_OnConnect` is called by the API Gateway WebSocket on connect
+* `src/_OnDisconnect` is called by the API Gateway WebSocket on disconnect
+* `src/_OnDefault` is called by the API Gateway WebSocket as the default route handler if `routeSelectionExpression` does not resolve to another handler.  In this example it just broadcasts any valid json to all connections.
+
+## Note
+
+WebSocket connections have a 10 minute idle disconnect and a 2 hour maximum connection time.
 
 ## Useful commands
 
