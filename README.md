@@ -24,12 +24,14 @@ Connect to `${WebsocketStack.WebSocketStageUrl}` with a WebSocket client.
 
 Open `${WebSocketStack.BroadcastUri}` in a browser.
 
-You should see `{"foo":"bar"}` in the WebSocket client.
+You should see `{"now":"2022-03-05T03:19:53.765Z"}` in the WebSocket client but with the current date-time.
+
+Send valid json from one client and all clients should see it.  The input is only restricted to json due to _OnDefault using `JSON.parse(event.body)` before broadcasting.
 
 ## Lambdas
 
-* `src/_OnConnect` is called by the API Gateway WebSocket on connect
-* `src/_OnDisconnect` is called by the API Gateway WebSocket on disconnect
+* `src/_OnConnect` is called by the API Gateway WebSocket on connect.  Returning an error prevents the connection.
+* `src/_OnDisconnect` is called by the API Gateway WebSocket on disconnect.
 * `src/_OnDefault` is called by the API Gateway WebSocket as the default route handler if `routeSelectionExpression` does not resolve to another handler.  In this example it just broadcasts any valid json to all connections.
 
 ## Note
