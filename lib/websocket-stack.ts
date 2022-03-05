@@ -1,3 +1,5 @@
+/**************************************/
+
 import { Construct, RemovalPolicy, Stack, StackProps } from '@aws-cdk/core'
 
 import * as CDK from '@aws-cdk/core'
@@ -7,7 +9,8 @@ import * as ApiGatewayV2 from '@aws-cdk/aws-apigatewayv2'
 import * as DynamoDb from '@aws-cdk/aws-dynamodb'
 
 import { WebSocketLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations'
-import { Cors } from '@aws-cdk/aws-apigateway'
+
+/**************************************/
 
 const createWebSocketLambdaIntegration = (scope: Construct, lambdaName: string, layer: Lambda.LayerVersion, environment: { [key: string]: string } = {}): {
   lambda: Lambda.Function
@@ -27,12 +30,14 @@ const createWebSocketLambdaIntegration = (scope: Construct, lambdaName: string, 
   }
 }
 
+/**************************************/
+
 export class WebSocketStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
 
     // Somewhere to store connections
-    const table = new DynamoDb.Table(this, 'WEBSOCKET_EXAMPLE', {
+    const table = new DynamoDb.Table(this, 'WebSockets', {
       removalPolicy: RemovalPolicy.DESTROY,
       partitionKey: {
         name: 'pk',
@@ -58,7 +63,7 @@ export class WebSocketStack extends Stack {
     const onDefault = createWebSocketLambdaIntegration(this, '_OnDefault', layer, { TABLE: table.tableName })
 
     // ... then the api can be created ...
-    const webSocketApi = new ApiGatewayV2.WebSocketApi(this, 'WebSocketAPI', {
+    const webSocketApi = new ApiGatewayV2.WebSocketApi(this, 'WebSocket Stack WS API', {
       connectRouteOptions: { integration: onConnect.integration },
       disconnectRouteOptions: { integration: onDisconnect.integration },
       defaultRouteOptions: { integration: onDefault.integration },
@@ -90,7 +95,7 @@ export class WebSocketStack extends Stack {
     // Rest API Gateway is used as a demo "external" event source
     // Setup REST API endpoint to message websockets
     const restApi = new ApiGateway.RestApi(this, 'RestAPI', {
-      restApiName: 'WebSocket App Rest API'
+      restApiName: 'WebSocket Stack REST API'
     })
 
     // Lambda with its integration
@@ -110,7 +115,7 @@ export class WebSocketStack extends Stack {
     // CORS: https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-apigateway.CorsOptions.html
     const resource = restApi.root.addResource('broadcast') // PATH: /broadcast
     resource.addCorsPreflight({
-      allowOrigins: Cors.ALL_ORIGINS,
+      allowOrigins: ApiGateway.Cors.ALL_ORIGINS,
       allowMethods: ['*']
     })
     resource.addMethod('GET', broadcastIntegration)
@@ -126,3 +131,5 @@ export class WebSocketStack extends Stack {
     new CDK.CfnOutput(this, 'BroadcastUri', { value: `${restApi.url}${resource.path.substring(1)}` })
   }
 }
+
+/**************************************/

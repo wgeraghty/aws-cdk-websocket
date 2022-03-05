@@ -26,6 +26,7 @@ export const handler: APIGatewayProxyHandler = async (
     console.log('Broadcasting...')
     await broadcast(body)
 
+    // Any data sent here isn't relayed to the client
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'text/plain' },
@@ -35,6 +36,7 @@ export const handler: APIGatewayProxyHandler = async (
     console.log(error)
     console.log('Denied')
 
+    // Any data sent here isn't relayed to the client
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'text/plain' },

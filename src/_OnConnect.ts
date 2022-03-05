@@ -30,6 +30,11 @@ export const handler: APIGatewayProxyHandler = async (
       }
     })
 
+    // NOTE: ApiGatewayManagementApi.postToConnection(...) will not work for this
+    // connection until after this lambda has returned
+
+    // A 200 status code allows the connection to open
+    // Any additional data sent here isn't relayed to the client
     console.log('Accepted')
     return {
       statusCode: 200,
@@ -40,6 +45,8 @@ export const handler: APIGatewayProxyHandler = async (
     console.log(error)
     console.log('Denied')
 
+    // An error status code prevents the connection
+    // Any additional data sent here isn't relayed to the client
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'text/plain' },
